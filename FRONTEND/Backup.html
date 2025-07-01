@@ -9,6 +9,7 @@
   <div class="container">
     <h1 class="mb-4">Find and Join Volunteer Opportunities</h1>
 
+    <!-- Sign-Up Form -->
     <form id="volunteerForm" class="mb-4">
       <h4>Sign Up as a Volunteer</h4>
       <div class="row">
@@ -32,53 +33,137 @@
       </div>
     </form>
 
- <hr class="my-4" />
+    
+    
+    
+    <hr class="my-4" />
+
+    <div class="container">
+    <h1 class="mb-4">Feedback Forms</h1>
+
+    <div class="tab-pane fade" id="feedback">
+  <!-- Feedback Form -->
+  <form id="feedbackForm" class="mb-4">
+    <h4>Submit Your Feedback</h4>
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        <input type="text" class="form-control" id="feedbackName" placeholder="Your Name" required />
+      </div>
+      <div class="col-md-12 mb-3">
+        <textarea class="form-control" id="feedbackMessage" placeholder="Your Feedback" rows="3" required></textarea>
+      </div>
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+      </div>
+    </div>
+    </div>
+  </form>
 
 
- 
-    <!-- Tabs for all tables -->
+      <hr class="my-4" />
+
+
+
+
+    <div class="row g-3" id="opportunityCards"></div>
+
+        <hr class="my-4" />
+
+
+
+    <!-- Tabs Navigation -->
     <ul class="nav nav-tabs" id="dataTabs" role="tablist">
       <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#opportunities">Opportunities</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#organizations">Organizations</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#volunteers">Volunteers</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#feedback">Feedback</a></li>
     </ul>
 
+    <!-- Tab Contents -->
     <div class="tab-content mt-3">
+      <!-- Opportunities Tab -->
       <div class="tab-pane fade show active" id="opportunities">
-        <div id="opportunityList" class="row g-3"></div>
-        <table id="opportunitiestable"><tbody></tbody></table>
+        <div class="row g-3" id="opportunityCards1"></div>
+        <table id="opportunitiestable" class="table table-bordered mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Organization</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <div class="tab-pane fade" id="organizations">
-        <ul id="orgList" class="list-group"></ul>
-        <table id="organizationstable"><tbody></tbody></table>
 
+      <!-- Organizations Tab -->
+      <div class="tab-pane fade" id="organizations">
+        <table id="organizationstable" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Contact Email</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
+
+      <!-- Volunteers Tab -->
       <div class="tab-pane fade" id="volunteers">
-        <ul id="volunteerList" class="list-group"></ul>
-        <table id="volunteerstable"><tbody></tbody></table>
+        <table id="volunteerstable" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Opportunity</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
+
+
+      <div class="tab-pane fade" id="feedback">
+  <table id="feedbacktable" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Message</th>
+        <th>Submitted At</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+
+
     </div>
   </div>
 
-
-
-    <h4>Available Opportunities</h4>
-    <div id="opportunityList" class="row g-3"></div>
-  </div>
-
+  <!-- Scripts -->
   <script>
-
     async function loadOpportunities() {
       const res = await fetch('https://ideal-space-fortnight-5g5jrrw57q5r2wq6-6008.app.github.dev/api/opportunities');
       const data = await res.json();
-      const list = document.getElementById('opportunityList');
+      const cardList = document.getElementById('opportunityCards');
       const dropdown = document.getElementById('opportunity');
-      list.innerHTML = '';
+
+      cardList.innerHTML = '';
       dropdown.innerHTML = '<option value="">Select Opportunity</option>';
 
       data.forEach(op => {
         dropdown.innerHTML += `<option value="${op.id}">${op.title} (${op.event_date})</option>`;
-        list.innerHTML += `
+        cardList.innerHTML += `
           <div class="col-md-6">
             <div class="card shadow-sm p-3">
               <h5>${op.title}</h5>
@@ -108,12 +193,29 @@
       alert("You've been signed up!");
       document.getElementById('volunteerForm').reset();
     });
-    
 
     loadOpportunities();
+
+
+    // Submit Feedback
+document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('feedbackName').value;
+  const message = document.getElementById('feedbackMessage').value;
+
+  await fetch('https://ideal-space-fortnight-5g5jrrw57q5r2wq6-6008.app.github.dev/api/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, message })
+  });
+
+  alert("Thank you for your feedback!");
+  document.getElementById('feedbackForm').reset();
+});
+
+
   </script>
-
-    <script src="tables.js"></script>
-
+  <script src="tables.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

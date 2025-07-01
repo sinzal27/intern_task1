@@ -39,6 +39,12 @@ app.post('/api/volunteer', async (req, res) => {
   res.status(201).send('Volunteer signed up');
 });
 
+app.post('/api/feedback', async (req, res) => {
+  const { name, message } = req.body;
+  await pool.query('INSERT INTO feedback (name, message) VALUES ($1, $2)', [name, message]);
+  res.status(201).send('Feedback submitted');
+});
+
 
 //All Tables
 
@@ -84,6 +90,18 @@ app.get('/api/volunteers', async (req, res) => {
     res.status(500).send('Error fetching volunteers');
   }
 });
+
+// GET all feedback entries
+app.get('/api/feedback', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM feedback ORDER BY submitted_at DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching feedback:', err);
+    res.status(500).send('Server error while fetching feedback');
+  }
+});
+
 
 
 const PORT = process.env.PORT || 3000;

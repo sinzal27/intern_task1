@@ -38,3 +38,16 @@ fetch(`${base}/volunteers`).then(r => r.json()).then(data => {
         </tr>`;
     });
 });
+
+
+fetch(`${base}/feedback`).then(r => r.json()).then(data => {
+    const tbody = document.querySelector("#feedbacktable tbody");
+    data.forEach(item => {
+        tbody.innerHTML += `<tr>
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.message}</td>
+            <td>${new Date(item.submitted_at).toLocaleString()}</td>
+        </tr>`;
+    });
+});

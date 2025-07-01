@@ -37,15 +37,14 @@
 
     <div class="row g-3" id="opportunityCards"></div>
 
-        <hr class="my-4" />
-
-
+    <hr class="my-4" />
 
     <!-- Tabs Navigation -->
     <ul class="nav nav-tabs" id="dataTabs" role="tablist">
       <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#opportunities">Opportunities</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#organizations">Organizations</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#volunteers">Volunteers</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#feedback">Feedback</a></li>
     </ul>
 
     <!-- Tab Contents -->
@@ -98,6 +97,38 @@
           <tbody></tbody>
         </table>
       </div>
+
+      <!-- Feedback Tab -->
+      <div class="tab-pane fade" id="feedback">
+        <!-- Feedback Form -->
+        <form id="feedbackForm" class="mb-4">
+          <h4>Submit Your Feedback</h4>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <input type="text" class="form-control" id="feedbackName" placeholder="Your Name" required />
+            </div>
+            <div class="col-md-12 mb-3">
+              <textarea class="form-control" id="feedbackMessage" placeholder="Your Feedback" rows="3" required></textarea>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Feedback Table -->
+        <table id="feedbacktable" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Message</th>
+              <th>Submitted At</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -128,6 +159,7 @@
       });
     }
 
+    // Handle volunteer form
     document.getElementById('volunteerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('name').value;
@@ -143,6 +175,22 @@
 
       alert("You've been signed up!");
       document.getElementById('volunteerForm').reset();
+    });
+
+    // Handle feedback form
+    document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('feedbackName').value;
+      const message = document.getElementById('feedbackMessage').value;
+
+      await fetch('https://ideal-space-fortnight-5g5jrrw57q5r2wq6-6008.app.github.dev/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message })
+      });
+
+      alert("Thank you for your feedback!");
+      document.getElementById('feedbackForm').reset();
     });
 
     loadOpportunities();
