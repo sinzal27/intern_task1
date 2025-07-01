@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Volunteer Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4 bg-light">
+  <div class="container">
+    <h1 class="mb-4">Find and Join Volunteer Opportunities</h1>
+
+    <form id="volunteerForm" class="mb-4">
+      <h4>Sign Up as a Volunteer</h4>
+      <div class="row">
+        <div class="col-md-4 mb-2">
+          <input class="form-control" type="text" id="name" placeholder="Your Name" required />
+        </div>
+        <div class="col-md-4 mb-2">
+          <input class="form-control" type="email" id="email" placeholder="Your Email" required />
+        </div>
+        <div class="col-md-4 mb-2">
+          <input class="form-control" type="tel" id="phone" placeholder="Phone Number" />
+        </div>
+        <div class="col-md-12 mb-3">
+          <select class="form-select" id="opportunity" required>
+            <option value="">Select Opportunity</option>
+          </select>
+        </div>
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-success">Sign Up</button>
+        </div>
+      </div>
+    </form>
+
+ <hr class="my-4" />
+
+
+ 
+    <!-- Tabs for all tables -->
+    <ul class="nav nav-tabs" id="dataTabs" role="tablist">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#opportunities">Opportunities</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#organizations">Organizations</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#volunteers">Volunteers</a></li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <div class="tab-pane fade show active" id="opportunities">
+        <div id="opportunityList" class="row g-3"></div>
+        <table id="opportunitiestable"><tbody></tbody></table>
+      </div>
+      <div class="tab-pane fade" id="organizations">
+        <ul id="orgList" class="list-group"></ul>
+        <table id="organizationstable"><tbody></tbody></table>
+
+      </div>
+      <div class="tab-pane fade" id="volunteers">
+        <ul id="volunteerList" class="list-group"></ul>
+        <table id="volunteerstable"><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+
+
+    <h4>Available Opportunities</h4>
+    <div id="opportunityList" class="row g-3"></div>
+  </div>
+
+  <script>
+
+    async function loadOpportunities() {
+      const res = await fetch('https://ideal-space-fortnight-5g5jrrw57q5r2wq6-6008.app.github.dev/api/opportunities');
+      const data = await res.json();
+      const list = document.getElementById('opportunityList');
+      const dropdown = document.getElementById('opportunity');
+      list.innerHTML = '';
+      dropdown.innerHTML = '<option value="">Select Opportunity</option>';
+
+      data.forEach(op => {
+        dropdown.innerHTML += `<option value="${op.id}">${op.title} (${op.event_date})</option>`;
+        list.innerHTML += `
+          <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+              <h5>${op.title}</h5>
+              <p>${op.description}</p>
+              <p><strong>Location:</strong> ${op.location}</p>
+              <p><strong>Date:</strong> ${op.event_date}</p>
+              <p><strong>By:</strong> ${op.organization}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('volunteerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const opportunity_id = document.getElementById('opportunity').value;
+
+      await fetch('https://ideal-space-fortnight-5g5jrrw57q5r2wq6-6008.app.github.dev/api/volunteer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, opportunity_id })
+      });
+
+      alert("You've been signed up!");
+      document.getElementById('volunteerForm').reset();
+    });
+    
+
+    loadOpportunities();
+  </script>
+
+    <script src="tables.js"></script>
+
+</body>
+</html>
